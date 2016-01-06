@@ -1,0 +1,8 @@
+{
+"server":"127.0.0.1",
+"server_port":8081,
+"local_port":1081,
+"method":"aes-256-cfb"
+"timeout":300,
+"password":"xdc"
+}
