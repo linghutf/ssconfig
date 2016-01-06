@@ -1,9 +1,7 @@
 package ss
 
 import (
-	//"errors"
-	"encoding/json"
-	//"github.com/pquerna/ffjson/ffjson"
+	"github.com/pquerna/ffjson/ffjson"
 	"io/ioutil"
 	"log"
 	"os"
@@ -24,7 +22,7 @@ func NewConfig(port ...int) *Config {
 	if len(port) >= 1 {
 		sslocal.Local_port = port[0]
 	}
-	sslocal.Local_port = 1080
+	sslocal.Local_port = 1081
 	sslocal.Timeout = 300
 	return sslocal
 }
@@ -37,18 +35,19 @@ func (this *Config) ReadConfig(filename string) error {
 	//log.Println(bytes)
 	var configs Config
 
-	err = json.Unmarshal(bytes, &configs)
+	//err = json.Unmarshal(bytes, &configs)
+	err = ffjson.Unmarshal(bytes, &configs)
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
-	log.Println(configs)
+	//log.Println(configs)
 	this = &configs
 	return nil
 }
 
 func (this *Config) WriteConfig(filename string) error {
-	bytes, err := json.Marshal(*this)
+	bytes, err := ffjson.Marshal(*this)
 	if err != nil {
 		log.Fatal(err)
 	}

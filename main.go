@@ -2,8 +2,12 @@ package main
 
 import (
 	"./ss"
+	"flag"
 )
 
+var port *int = flag.Int("p", 1080, "Use: -p <local port>.")
+
 func main() {
-	ss.ScrapUsefulNode()
+	flag.Parse()
+	ss.ScrapUsefulNode(*port)
 }
