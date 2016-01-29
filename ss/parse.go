@@ -3,6 +3,7 @@ package ss
 import (
 	"github.com/PuerkitoBio/goquery"
 	"log"
+	"path"
 	"strconv"
 	"strings"
 )
@@ -13,7 +14,7 @@ func CheckErr(e error) {
 	}
 }
 
-func ParseFreeNode(configs *[]Config, url string) {
+func ParseFreeNode(configs *[]Config, port int, url string) {
 	doc, err := goquery.NewDocument(url)
 	CheckErr(err)
 
@@ -32,7 +33,7 @@ func ParseFreeNode(configs *[]Config, url string) {
 		}
 		//log.Println(config)
 		var perr error
-		ss := NewConfig(1080)
+		ss := NewConfig(port)
 		ss.Server = config[0]
 		ss.Server_port, perr = strconv.Atoi(config[1])
 		CheckErr(perr)
@@ -43,9 +44,22 @@ func ParseFreeNode(configs *[]Config, url string) {
 	}
 }
 
-func WriteFiles(configs *[]Config) {
+func WriteFiles(configs *[]Config, filepath string) bool {
 	for i, n := range *configs {
 		filename := "config" + strconv.Itoa(i) + ".json"
-		n.WriteConfig(filename)
+		if n.WriteConfig(filepath, filename) != nil {
+			return false
+		}
+	}
+	return true
+}
+
+func ScrapUsefulNode(port int) {
+	configs := make([]Config, 3)
+	ParseFreeNode(&configs, port, "http://www.ishadowsocks.com")
+	if WriteFiles(&configs, path.Base("./")) {
+		log.Println("[successfully updated].")
+	} else {
+		log.Println("error occured.")
 	}
 }

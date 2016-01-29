@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 type Config struct {
@@ -17,12 +18,12 @@ type Config struct {
 	Timeout    int    `json:"timeout"`
 }
 
-func NewConfig(port ...int) *Config {
+func NewConfig(args ...int) *Config {
 	sslocal := new(Config)
-	if len(port) >= 1 {
-		sslocal.Local_port = port[0]
-	}
 	sslocal.Local_port = 1081
+	if len(args) >= 1 {
+		sslocal.Local_port = args[0]
+	}
 	sslocal.Timeout = 300
 	return sslocal
 }
@@ -46,10 +47,10 @@ func (this *Config) ReadConfig(filename string) error {
 	return nil
 }
 
-func (this *Config) WriteConfig(filename string) error {
+func (this *Config) WriteConfig(filep string, filename string) error {
 	bytes, err := ffjson.Marshal(*this)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return ioutil.WriteFile(filename, bytes, os.ModePerm)
+	return ioutil.WriteFile(filepath.Join(filep, filename), bytes, os.ModePerm)
 }
